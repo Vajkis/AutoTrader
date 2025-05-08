@@ -11,7 +11,6 @@ int SLIPPAGE = 3;
 double STOP_LOSS = 0;
 double TAKE_PROFIT = 0;
 double SAFE_STOP_LOSS_MIN = 0.5;
-double SAFE_STOP_LOSS_BUFFER = 0.5;
 int MAX_SPREAD = 10;
 color COLOR_LONG = RGB(69, 249, 69);
 color COLOR_SHORT = RGB(244, 67, 68);
@@ -115,13 +114,13 @@ void OnTick()
 
     if(stopLoss == 0){
       if(OrderType() == OP_BUY 
-      && Bid - entryPrice > dynamicSafeStopLoss + SAFE_STOP_LOSS_BUFFER)
+      && Bid - entryPrice > dynamicSafeStopLoss * 2)
       {
         newStopLoss = entryPrice + dynamicSafeStopLoss;
         OrderModify(ticket, entryPrice, newStopLoss, 0, 0, COLOR_LONG);
       }
       else if(OrderType() == OP_SELL 
-           && entryPrice - Ask > dynamicSafeStopLoss + SAFE_STOP_LOSS_BUFFER)
+           && entryPrice - Ask > dynamicSafeStopLoss * 2)
       {
         newStopLoss = entryPrice - dynamicSafeStopLoss;
         OrderModify(ticket, entryPrice, newStopLoss, 0, 0, COLOR_SHORT);
