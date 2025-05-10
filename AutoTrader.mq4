@@ -67,13 +67,12 @@ void OnTick()
   info += "\nMACD1: " + DoubleToString(MACD1, 6);
   info += "\nMACD2: " + DoubleToString(MACD2, 6);
   info += "\nMACD3: " + DoubleToString(MACD3, 6);
-  info += "\nTicket: " + ticket;
   info += "\nTolerance: " + DoubleToString(dynamicTolerance * 0.2, 6);
   info += "\nSpread: " + spread;
   info += "\nSL: " + DoubleToString(dynamicSafeStopLoss, 2);
   info += "\nEquity: " + equity;
   info += "\nVolume: " + dynamicVolume;
-  info += "\nProfit: " + profit;
+  info += "\nLast Loss: " + DoubleToString(profit, 2);
   
   Comment(info);
 
@@ -114,13 +113,13 @@ void OnTick()
 
     if(stopLoss == 0){
       if(OrderType() == OP_BUY 
-      && Bid - entryPrice > dynamicSafeStopLoss * 2)
+      && Bid - entryPrice > dynamicSafeStopLoss)
       {
         newStopLoss = entryPrice + dynamicSafeStopLoss;
         OrderModify(ticket, entryPrice, newStopLoss, 0, 0, COLOR_LONG);
       }
       else if(OrderType() == OP_SELL 
-           && entryPrice - Ask > dynamicSafeStopLoss * 2)
+           && entryPrice - Ask > dynamicSafeStopLoss)
       {
         newStopLoss = entryPrice - dynamicSafeStopLoss;
         OrderModify(ticket, entryPrice, newStopLoss, 0, 0, COLOR_SHORT);
@@ -154,4 +153,3 @@ void OpenOrder(int cmd, double dynamicVolume, double price )
 {
   ticket = OrderSend(Symbol(), cmd, dynamicVolume, price, SLIPPAGE, STOP_LOSS, TAKE_PROFIT, NULL, 0, 0, cmd == OP_BUY ? COLOR_LONG : COLOR_SHORT); 
 }
-
