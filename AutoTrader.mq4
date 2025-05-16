@@ -87,8 +87,9 @@ void OnTick()
     if(MACD2 < MACD_BUY_THRESHOLD 
     && MACD3 > MACD1 
     && MACD3 > MACD2
-    && (Close[1] - Open[1] < 0
-    || Close[0] - Open[0] < -1))
+    && (Close[2] - Open[2] > 0
+    || Close[1] - Open[1] > 0
+    || Close[0] - Open[0] > 0))
     {
       OpenOrder(OP_BUY, dynamicVolume, Ask);
       openMACD = MACD3;
@@ -96,8 +97,9 @@ void OnTick()
     else if(MACD2 > MACD_SELL_THRESHOLD 
          && MACD3 < MACD1 
          && MACD3 < MACD2         
-         && (Close[1] - Open[1] > 0
-         || Close[0] - Open[0] > 1))
+         && (Close[2] - Open[2] < 0
+         || Close[1] - Open[1] < 0
+         || Close[0] - Open[0] < 0))
     {
       OpenOrder(OP_SELL, dynamicVolume, Bid);
       openMACD = MACD3;
@@ -113,15 +115,15 @@ void OnTick()
 
     if(stopLoss == 0){
       if(OrderType() == OP_BUY 
-      && Bid - entryPrice > dynamicSafeStopLoss)
+      && Bid - entryPrice > dynamicSafeStopLoss * 0.5)
       {
-        newStopLoss = entryPrice + dynamicSafeStopLoss;
+        newStopLoss = entryPrice + dynamicSafeStopLoss * 0.5;
         OrderModify(ticket, entryPrice, newStopLoss, 0, 0, COLOR_LONG);
       }
       else if(OrderType() == OP_SELL 
-           && entryPrice - Ask > dynamicSafeStopLoss)
+           && entryPrice - Ask > dynamicSafeStopLoss * 0.5)
       {
-        newStopLoss = entryPrice - dynamicSafeStopLoss;
+        newStopLoss = entryPrice - dynamicSafeStopLoss * 0.5;
         OrderModify(ticket, entryPrice, newStopLoss, 0, 0, COLOR_SHORT);
       }
     }
